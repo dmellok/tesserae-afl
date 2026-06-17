@@ -1,0 +1,59 @@
+{
+  "tesserae_compat": "1.x",
+  "name": "AFL, Ladder",
+  "version": "0.1.0",
+  "kind": "widget",
+  "description": "Current AFL home-and-away ladder: rank, club, wins, losses, percentage. Live during the season; updates the morning after each round. Data from the public Squiggle API (https://api.squiggle.com.au); no key required.",
+  "icon": "ph-trophy",
+  "supports": {
+    "sizes": ["xs", "sm", "md", "lg"]
+  },
+  "cell_options": [
+    {
+      "name": "year",
+      "type": "number",
+      "label": "Season (year)",
+      "default": 0
+    },
+    {
+      "name": "highlight_team",
+      "type": "select",
+      "label": "Highlight a club",
+      "default": "",
+      "choices": [
+        { "value": "",              "label": "None"            },
+        { "value": "Adelaide",      "label": "Adelaide Crows"   },
+        { "value": "Brisbane Lions","label": "Brisbane Lions"   },
+        { "value": "Carlton",       "label": "Carlton Blues"    },
+        { "value": "Collingwood",   "label": "Collingwood"      },
+        { "value": "Essendon",      "label": "Essendon Bombers" },
+        { "value": "Fremantle",     "label": "Fremantle Dockers"},
+        { "value": "Geelong",       "label": "Geelong Cats"     },
+        { "value": "Gold Coast",    "label": "Gold Coast Suns"  },
+        { "value": "Greater Western Sydney", "label": "GWS Giants" },
+        { "value": "Hawthorn",      "label": "Hawthorn"         },
+        { "value": "Melbourne",     "label": "Melbourne"        },
+        { "value": "North Melbourne","label": "North Melbourne" },
+        { "value": "Port Adelaide", "label": "Port Adelaide"    },
+        { "value": "Richmond",      "label": "Richmond Tigers"  },
+        { "value": "St Kilda",      "label": "St Kilda"         },
+        { "value": "Sydney",        "label": "Sydney Swans"     },
+        { "value": "West Coast",    "label": "West Coast Eagles"},
+        { "value": "Western Bulldogs","label": "Western Bulldogs"}
+      ]
+    },
+    {
+      "name": "max_teams",
+      "type": "number",
+      "label": "Maximum clubs to show (1-18)",
+      "default": 8
+    }
+  ],
+  "requires": [
+    "network:api.squiggle.com.au"
+  ],
+  "render": {
+    "dither": "floyd-steinberg",
+    "needs_network": true
+  }
+}
