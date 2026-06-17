@@ -1,7 +1,7 @@
 {
   "tesserae_compat": "1.x",
   "name": "AFL, Next Match",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "kind": "widget",
   "description": "Your team's next AFL fixture: two big guernseys facing off, venue, kickoff time, and a countdown. Optional form strip showing the last five results. Data from the public Squiggle API; no key required. Install AFL Core alongside.",
   "icon": "ph-football",

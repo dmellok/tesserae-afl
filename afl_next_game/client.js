@@ -220,12 +220,13 @@ export default function render(shadow, ctx) {
       width: 22px;
       height: 22px;
       border-radius: var(--radius-1);
-      font-weight: var(--fw-black);
-      font-size: var(--fs-meta);
-      color: var(--surface);
+      font-weight: 900;
+      font-size: 13px;
+      line-height: 1;
+      color: #ffffff;
     }
     .anx-form-dot.is-w { background: var(--accent-1); }
-    .anx-form-dot.is-l { background: var(--text-muted); }
+    .anx-form-dot.is-l { background: var(--text-secondary); }
     .anx-form-dot.is-d { background: var(--accent-5); }
 
     @container (max-width: 320px) {
