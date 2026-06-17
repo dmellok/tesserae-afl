@@ -1,0 +1,42 @@
+{
+  "tesserae_compat": "1.x",
+  "name": "AFL, Round Fixtures",
+  "version": "0.1.0",
+  "kind": "widget",
+  "description": "Fixture list for the current AFL round: home guernsey vs away guernsey, kickoff time + venue if upcoming, final score if complete. Auto-detects the current round and bumps forward once every game finishes. Data from the public Squiggle API. Install AFL Core alongside.",
+  "icon": "ph-list-checks",
+  "supports": {
+    "sizes": ["sm", "md", "lg"]
+  },
+  "cell_options": [
+    {
+      "name": "round",
+      "type": "number",
+      "label": "Round (0 = auto-detect current/next)",
+      "default": 0
+    },
+    {
+      "name": "year",
+      "type": "number",
+      "label": "Season (year, 0 = current)",
+      "default": 0
+    },
+    {
+      "name": "club_icon",
+      "type": "select",
+      "label": "Club icon",
+      "default": "guernsey",
+      "choices": [
+        { "value": "guernsey", "label": "Guernsey (silhouette with club pattern)" },
+        { "value": "badge",    "label": "Badge (coloured monogram disc)"          }
+      ]
+    }
+  ],
+  "requires": [
+    "network:api.squiggle.com.au"
+  ],
+  "render": {
+    "dither": "floyd-steinberg",
+    "needs_network": true
+  }
+}

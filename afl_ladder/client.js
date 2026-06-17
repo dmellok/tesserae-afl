@@ -6,10 +6,10 @@
 // club gets a tinted background so a Cats fan can spot Geelong in
 // one glance.
 //
-// Size tiers via container queries on .w-body:
-//   narrow  rank + abbrev + W-L only.
-//   medium  rank + name + W-L-D + percentage.
-//   wide    rank + name + W-L-D + points + percentage.
+// Team palette + guernsey art live in afl_core so every afl_* widget
+// in the bundle pulls from one source.
+
+import { guernseySvg, badgeSvg, teamPrimary } from "../afl_core/static/guernsey.js";
 
 function escapeHtml(s) {
   return String(s ?? "").replace(/[&<>"']/g, (c) => ({
@@ -27,6 +27,7 @@ function rankAccent(rank) {
   if (rank >= 5 && rank <= 8) return "var(--accent-2)";
   return "var(--text-muted)";
 }
+
 
 export default function render(shadow, ctx) {
   const data = ctx?.data ?? {};
@@ -59,8 +60,9 @@ export default function render(shadow, ctx) {
     return;
   }
 
-  const options = ctx?.options ?? {};
+  const options = ctx?.cell?.options ?? {};
   const highlight = String(options.highlight_team || "").trim();
+  const rowIcon = String(options.row_icon || "guernsey");
   let maxTeams = Number(options.max_teams) || 8;
   if (maxTeams < 1) maxTeams = 1;
   if (maxTeams > 18) maxTeams = 18;
@@ -70,12 +72,19 @@ export default function render(shadow, ctx) {
     const rank = Number(t.rank) || 0;
     const accent = rankAccent(rank);
     const isHi = highlight && t.name === highlight;
-    const recordParts = [t.wins ?? 0, t.losses ?? 0];
-    if ((t.draws ?? 0) > 0) recordParts.push(t.draws);
-    const record = recordParts.join("-");
+    const record = `${t.wins ?? 0}-${t.losses ?? 0}-${t.draws ?? 0}`;
+    let icon = "";
+    if (rowIcon === "guernsey") {
+      icon = `<span class="afl-icon afl-icon-guernsey">${guernseySvg(t.name)}</span>`;
+    } else if (rowIcon === "badge") {
+      icon = `<span class="afl-icon afl-icon-badge">${badgeSvg(t.name)}</span>`;
+    } else if (rowIcon === "dot") {
+      icon = `<span class="afl-icon afl-icon-dot" style="background:${teamPrimary(t.name)}"></span>`;
+    }
     return `
       <div class="afl-row${isHi ? " is-hi" : ""}">
         <div class="afl-rank" style="background:${accent}">${escapeHtml(String(rank))}</div>
+        ${icon}
         <div class="afl-club">
           <span class="afl-name">${escapeHtml(t.name)}</span>
           <span class="afl-abbrev">${escapeHtml(t.abbrev || "")}</span>
@@ -86,21 +95,99 @@ export default function render(shadow, ctx) {
       </div>`;
   }).join("");
 
+  const headerIcon =
+    rowIcon === "none" ? "" : `<span class="afl-icon afl-icon-head"></span>`;
+  const header = `
+    <div class="afl-row afl-row-head">
+      <div class="afl-rank afl-rank-head">#</div>
+      ${headerIcon}
+      <div class="afl-club"><span class="afl-name">Club</span><span class="afl-abbrev">CLUB</span></div>
+      <div class="afl-stat afl-record">W-L-D</div>
+      <div class="afl-stat afl-points">PTS</div>
+      <div class="afl-stat afl-pct">%</div>
+    </div>`;
+
   const layout = `
     .w-body { container-type: inline-size; }
+    /* Parent owns the column tracks so stat columns line up across rows
+       (subgrid below). With/without icon column toggles at this level
+       since every row shares the same icon mode for a given render. */
     .afl-list {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
+      display: grid;
+      grid-template-columns: auto auto 1fr auto auto auto;
+      row-gap: 2px;
+    }
+    .afl-list:not(:has(.afl-icon)) {
+      grid-template-columns: auto 1fr auto auto auto;
     }
     .afl-row {
       display: grid;
-      grid-template-columns: auto 1fr auto auto auto;
+      grid-template-columns: subgrid;
+      grid-column: 1 / -1;
       align-items: center;
-      gap: var(--space-2);
+      column-gap: var(--space-3);
       padding: 4px var(--space-2);
       border-radius: var(--radius-1);
       font-variant-numeric: tabular-nums;
+    }
+    .afl-row-head {
+      font-size: var(--fs-caption);
+      letter-spacing: var(--ls-label);
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding-top: 0;
+      padding-bottom: 6px;
+      border-bottom: 1px solid color-mix(in oklab, var(--text-muted) 35%, transparent);
+      margin-bottom: 4px;
+    }
+    .afl-row-head .afl-name {
+      font-weight: var(--fw-black);
+      color: var(--text-muted);
+    }
+    .afl-row-head .afl-abbrev { display: none; }
+    .afl-row-head .afl-stat {
+      color: var(--text-muted) !important;
+      font-weight: var(--fw-black);
+    }
+    .afl-rank-head {
+      background: transparent !important;
+      color: var(--text-muted) !important;
+    }
+    .afl-icon-head {
+      width: 18px;
+      height: 22px;
+    }
+    .afl-list:has(.afl-icon-badge) .afl-icon-head {
+      width: 20px;
+      height: 20px;
+    }
+    .afl-list:has(.afl-icon-dot) .afl-icon-head {
+      width: 12px;
+      height: 12px;
+    }
+    .afl-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+    }
+    .afl-icon-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .afl-icon-guernsey {
+      width: 18px;
+      height: 22px;
+    }
+    .afl-icon-badge {
+      width: 20px;
+      height: 20px;
+    }
+    .afl-guernsey, .afl-badge {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
     .afl-row.is-hi {
       background: color-mix(in oklab, var(--accent-2) 18%, transparent);
@@ -139,16 +226,20 @@ export default function render(shadow, ctx) {
     .afl-stat {
       font-weight: var(--fw-bold);
       text-align: right;
+      white-space: nowrap;
     }
     .afl-pct { color: var(--text-secondary); }
     .afl-points { color: var(--accent-5); }
 
+    /* Size tiers drop columns from the parent grid; rows inherit via subgrid. */
     @container (max-width: 280px) {
-      .afl-row { grid-template-columns: auto auto 1fr auto; gap: var(--space-1); }
+      .afl-list { grid-template-columns: auto auto 1fr auto; column-gap: var(--space-1); }
+      .afl-list:not(:has(.afl-icon)) { grid-template-columns: auto 1fr auto; }
       .afl-name, .afl-pct, .afl-points { display: none; }
     }
     @container (min-width: 281px) and (max-width: 460px) {
-      .afl-row { grid-template-columns: auto 1fr auto auto; }
+      .afl-list { grid-template-columns: auto auto 1fr auto auto; }
+      .afl-list:not(:has(.afl-icon)) { grid-template-columns: auto 1fr auto auto; }
       .afl-points { display: none; }
       .afl-abbrev { display: none; }
     }
@@ -167,7 +258,7 @@ export default function render(shadow, ctx) {
         <span class="w-title-meta">${escapeHtml(String(year))}</span>
       </div>
       <div class="w-body">
-        <div class="afl-list">${rows}</div>
+        <div class="afl-list">${header}${rows}</div>
       </div>
     </div>`;
 }

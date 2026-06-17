@@ -1,27 +1,20 @@
 {
   "tesserae_compat": "1.x",
-  "name": "AFL, Ladder",
+  "name": "AFL, Next Match",
   "version": "0.1.0",
   "kind": "widget",
-  "description": "Current AFL home-and-away ladder: rank, club, wins, losses, percentage. Live during the season; updates the morning after each round. Data from the public Squiggle API (https://api.squiggle.com.au); no key required.",
-  "icon": "ph-trophy",
+  "description": "Your team's next AFL fixture: two big guernseys facing off, venue, kickoff time, and a countdown. Optional form strip showing the last five results. Data from the public Squiggle API; no key required. Install AFL Core alongside.",
+  "icon": "ph-football",
   "supports": {
-    "sizes": ["xs", "sm", "md", "lg"]
+    "sizes": ["sm", "md", "lg"]
   },
   "cell_options": [
     {
-      "name": "year",
-      "type": "number",
-      "label": "Season (year)",
-      "default": 0
-    },
-    {
-      "name": "highlight_team",
+      "name": "team",
       "type": "select",
-      "label": "Highlight a club",
-      "default": "",
+      "label": "Your club",
+      "default": "Geelong",
       "choices": [
-        { "value": "",              "label": "None"            },
         { "value": "Adelaide",      "label": "Adelaide Crows"   },
         { "value": "Brisbane Lions","label": "Brisbane Lions"   },
         { "value": "Carlton",       "label": "Carlton Blues"    },
@@ -43,22 +36,26 @@
       ]
     },
     {
-      "name": "max_teams",
-      "type": "number",
-      "label": "Maximum clubs to show (1-18)",
-      "default": 8
-    },
-    {
-      "name": "row_icon",
+      "name": "club_icon",
       "type": "select",
-      "label": "Row icon",
+      "label": "Club icon",
       "default": "guernsey",
       "choices": [
-        { "value": "none",     "label": "None"                                 },
-        { "value": "dot",      "label": "Dot (club primary colour)"            },
-        { "value": "badge",    "label": "Badge (coloured monogram disc)"       },
-        { "value": "guernsey", "label": "Guernsey (silhouette with club pattern)" }
+        { "value": "guernsey", "label": "Guernsey (silhouette with club pattern)" },
+        { "value": "badge",    "label": "Badge (coloured monogram disc)"          }
       ]
+    },
+    {
+      "name": "show_form",
+      "type": "boolean",
+      "label": "Show last-five form strip",
+      "default": true
+    },
+    {
+      "name": "show_countdown",
+      "type": "boolean",
+      "label": "Show countdown (in 1 day, etc)",
+      "default": true
     }
   ],
   "requires": [

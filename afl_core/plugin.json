@@ -1,0 +1,9 @@
+{
+  "tesserae_compat": "1.x",
+  "name": "AFL Core",
+  "version": "0.1.0",
+  "kind": "data",
+  "description": "Shared team palette, abbreviations, IDs, and guernsey SVG generator for the AFL widget family (afl_ladder, afl_next_game, afl_round, afl_last_game). No widget of its own. Install alongside any of the afl_* widgets.",
+  "icon": "ph-football",
+  "supports": { "sizes": ["sm", "md", "lg"] }
+}
